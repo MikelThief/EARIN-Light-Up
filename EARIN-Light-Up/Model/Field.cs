@@ -9,8 +9,9 @@ namespace EARIN_Light_Up
     public class Field
     {
         public FieldType Type { get; set; }
-        public int Id { get; set; }
-        public int Row { get; set; }
-        public int Column { get; set; }
+        public uint Id { get; set; }
+        public uint Row { get; set; }
+        public uint Column { get; set; }
+        public byte Visits { get; set; }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
+using System.Numerics;
 using Console = Colorful.Console;
 
 
@@ -8,21 +9,68 @@ namespace EARIN_Light_Up
 {
     public class Board
     {
-        private readonly int _size;
+        private readonly uint _size;
         private Field[,] _board;
+
+        public BigInteger Visits
+        {
+            get
+            {
+                BigInteger visits = 0;
+                for (uint rowCounter = 0; rowCounter < _size; rowCounter++)
+                {
+                    for (uint columnCounter = 0; columnCounter < _size; columnCounter++)
+                    {
+                        visits += _board[rowCounter,columnCounter].Visits;
+                    }
+                }
+
+                return visits;
+            }
+            set
+            {
+                for (uint rowCounter = 0; rowCounter < _size; rowCounter++)
+                {
+                    for (uint columnCounter = 0; columnCounter < _size; columnCounter++)
+                    {
+                        _board[rowCounter, columnCounter].Visits = 0;
+                    }
+                }
+            }
+        }
+        public BigInteger UniqueNodesVisited
+        {
+            get
+            {
+                BigInteger uniqueVisited = 0;
+                for (uint rowCounter = 0; rowCounter < _size; rowCounter++)
+                {
+                    for (uint columnCounter = 0; columnCounter < _size; columnCounter++)
+                    {
+                        if (_board[rowCounter, columnCounter].Visits > 0)
+                        {
+                            uniqueVisited += 1;
+                        }
+                    }
+                }
+
+                return uniqueVisited;
+            }
+        }
 
         public Board(string filePath)
         {
-            this._size = File.ReadAllLines(filePath).Length;
-            this._board = new Field[_size,_size];
+            this._size = (uint) File.ReadAllLines(filePath).Length;
+            this._board = new Field[_size, _size];
             LoadBoard(filePath);
 
         }
+
         /// <summary>
-        /// Loads a board from a path
+        /// Loads a board from a specified path
         /// </summary>
         /// <param name="filePath">path to a file with a board</param>
-        public void LoadBoard(string filePath)
+        private void LoadBoard(string filePath)
         {
             string fileContent = default(string);
             try
@@ -36,19 +84,20 @@ namespace EARIN_Light_Up
             {
                 Console.WriteLine(e, Color.Red);
             }
-            int fieldID = default(int);
 
-            for (int rowCounter = 0; rowCounter < _size; rowCounter++)
+            uint fieldID = default(uint);
+
+            for (uint rowCounter = 0; rowCounter < _size; rowCounter++)
             {
-                for (int columnCounter = 0; columnCounter < _size; columnCounter++)
+                for (uint columnCounter = 0; columnCounter < _size; columnCounter++)
                 {
                     var field = new Field()
                     {
                         Row = rowCounter,
                         Column = columnCounter,
-                        Id = fieldID,
+                        Id = fieldID
                     };
-                    string pointer = fileContent[fieldID].ToString();
+                    string pointer = fileContent[(int) fieldID].ToString();
                     switch (pointer)
                     {
                         case "_":
@@ -89,7 +138,8 @@ namespace EARIN_Light_Up
                         }
                         default:
                         {
-                            throw new Exception("File could not be loaded. Structure Error at position [" + rowCounter + "][" + columnCounter + "]");
+                            throw new Exception("File could not be loaded. Structure Error at position [" + rowCounter +
+                                                "][" + columnCounter + "]");
                         }
                     }
 
@@ -97,12 +147,40 @@ namespace EARIN_Light_Up
                     fieldID += 1;
                 }
             }
+
             Console.WriteLine("Board loaded.", Color.Aqua);
         }
 
         private void SaveBoard()
         {
             // TODO: Board saving to file
+        }
+
+        public void PutBulb(uint fieldID)
+        {
+            for (uint rowCounter = 0; rowCounter < _size; rowCounter++)
+            {
+                for (uint columnCounter = 0; columnCounter < _size; columnCounter++)
+                {
+                    if (_board[rowCounter, columnCounter].Id == fieldID)
+                    {
+                        _board[rowCounter, columnCounter].Type = FieldType.Bulb;
+                    }
+                }
+            }
+        }
+        public void RemoveBulb(uint fieldID)
+        {
+            for (uint rowCounter = 0; rowCounter < _size; rowCounter++)
+            {
+                for (uint columnCounter = 0; columnCounter < _size; columnCounter++)
+                {
+                    if (_board[rowCounter, columnCounter].Id == fieldID)
+                    {
+                        _board[rowCounter, columnCounter].Type = FieldType.Empty;
+                    }
+                }
+            }
         }
     }
 }
