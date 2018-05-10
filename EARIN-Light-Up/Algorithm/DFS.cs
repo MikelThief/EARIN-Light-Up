@@ -27,8 +27,11 @@ namespace EARIN_Light_Up.Algorithm
 
         private void Search(uint depth)
         {
-            if (Validator.ValidateBoard(Board) || depth == 0)
-                return;
+	        if (depth == 0)
+	        {
+				// TODO: Solution counter and state saving
+		        return;
+			}
             for(uint counter = _numberOfFields-depth; counter < _numberOfFields; counter++)
             {
                 if (Validator.ValidateMove(Board, counter))

@@ -12,7 +12,7 @@ namespace EARIN_Light_Up.Misc
         public static bool ValidateMove(Board board, uint fieldID)
         {
            // TODO: Write validation rules for a single move
-            
+	        return board.ValidateMove(fieldID);
             return false;
         }
         public static bool ValidateBoard(Board board)
