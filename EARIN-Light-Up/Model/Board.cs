@@ -38,11 +38,11 @@ namespace EARIN_Light_Up
                 }
             }
         }
-        public BigInteger UniqueNodesVisited
+        public uint UniqueNodesVisited
         {
             get
             {
-                BigInteger uniqueVisited = 0;
+                uint uniqueVisited = 0;
                 for (uint rowCounter = 0; rowCounter < _size; rowCounter++)
                 {
                     for (uint columnCounter = 0; columnCounter < _size; columnCounter++)
@@ -182,5 +182,65 @@ namespace EARIN_Light_Up
                 }
             }
         }
-    }
+        public Tuple<uint,uint> GetPositionByID(uint fieldID)
+        {
+            for (uint rowCounter = 0; rowCounter < _size; rowCounter++)
+            {
+                for (uint columnCounter = 0; columnCounter < _size; columnCounter++)
+                {
+                    if (_board[rowCounter, columnCounter].Id == fieldID)
+                    {
+                        return new Tuple<uint, uint>(rowCounter, columnCounter);
+                    }
+                }
+            }
+
+            return null;
+        }
+        public bool ValidateSolution()
+        {
+            for (uint rowCounter = 0; rowCounter < _size; rowCounter++)
+            {
+                for (uint columnCounter = 0; columnCounter < _size; columnCounter++)
+                {
+                    if (_board[rowCounter, columnCounter].Type == FieldType.Empty)
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        private void IlluminateFields(uint bulbPosition)
+        {
+            var position = GetPositionByID(bulbPosition);
+            uint bulbRow = default, bulbColumn = default;
+            position.Deconstruct(out bulbRow, out bulbPosition);
+
+			// illuminate upwards
+            for (int rowCounter = (int) position.Item1; rowCounter < 0 ; --rowCounter)
+            {
+                if (_board[rowCounter, bulbColumn].Type == FieldType.Empty)
+                    _board[rowCounter, bulbRow].Type = FieldType.Lit;
+                else break;
+            }
+
+			// illuminate downwards
+			for (int rowCounter = (int)position.Item1; rowCounter > _size; ++rowCounter)
+			{
+			    if (_board[rowCounter, bulbColumn].Type == FieldType.Empty)
+			        _board[rowCounter, bulbRow].Type = FieldType.Lit;
+			    else break;
+			}
+
+			// TODO: Illuminate corresponding fields after placing a bulb
+		}
+
+        private void DeIlluminateField(uint bulbPosition)
+        {
+            // TODO: DeIlluminate corresponding field after removing a bulb
+        }
+	}
 }

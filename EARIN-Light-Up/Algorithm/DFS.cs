@@ -13,7 +13,7 @@ namespace EARIN_Light_Up.Algorithm
     public class DFS
     {
         public BigInteger Visits { get; private set; }
-        public BigInteger UniqueNodesVisited { get; private set; }
+        public uint UniqueNodesVisited { get; private set; }
         public bool Solved { get; private set; }
         private uint _numberOfFields { get; set; }
         private Board Board { get; set; }
@@ -21,9 +21,8 @@ namespace EARIN_Light_Up.Algorithm
         public void Perform(Board board, uint depth, uint numberOfFields)
         {
             _numberOfFields = numberOfFields;
+            Board = board;
             Search(depth);
-            this.Visits = board.Visits;
-            this.UniqueNodesVisited = Board.UniqueNodesVisited;
         }
 
         private void Search(uint depth)
