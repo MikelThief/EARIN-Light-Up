@@ -12,16 +12,15 @@ namespace EARIN_Light_Up.Algorithm
 {
     public class DFS
     {
-        public BigInteger Visits { get; private set; }
-        public uint UniqueNodesVisited { get; private set; }
-        public bool Solved { get; private set; }
         private uint _numberOfFields { get; set; }
         private Board Board { get; set; }
 
-        public void Perform(Board board, uint depth, uint numberOfFields)
+		List<Board> solutions = new List<Board>();
+
+        public void Perform(Board srcboard, uint depth, uint numberOfFields)
         {
             _numberOfFields = numberOfFields;
-            Board = board;
+            Board = srcboard;
             Search(depth);
         }
 
@@ -29,18 +28,18 @@ namespace EARIN_Light_Up.Algorithm
         {
 	        if (depth == 0)
 	        {
-				// TODO: Solution counter and state saving
+		        solutions.Add(Board);
 		        return;
-			}
-            for(uint counter = _numberOfFields-depth; counter < _numberOfFields; counter++)
+	        }
+			for (uint counter = _numberOfFields-depth; counter < _numberOfFields; counter++)
             {
-                if (Validator.ValidateMove(Board, counter))
-                {
-                    Board.PutBulb(counter);
-                    Search(depth - 1);
-                    Board.RemoveBulb(counter);
-                }
+	            if (Validator.ValidateMove(Board, counter))
+	            {
+		            Board.PutBulb(counter);
+		            Search(--depth);
+		            Board.RemoveBulb(counter);
+	            }
             }
-        }
+		}
     }
 }

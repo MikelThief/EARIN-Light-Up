@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EARIN_Light_Up.Algorithm;
 
 namespace EARIN_Light_Up
 {
@@ -11,6 +12,10 @@ namespace EARIN_Light_Up
         static void Main()
         {
             var board = new Board("testboard.txt");
+
+	        var DFSbox = new DFS();
+
+			DFSbox.Perform(board, board.size * board.size, board.size * board.size);
         }
     }
 }

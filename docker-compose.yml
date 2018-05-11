@@ -1,8 +1,0 @@
-version: '3.4'
-
-services:
-  earin-light-up:
-    image: ${DOCKER_REGISTRY}earinlightup
-    build:
-      context: .\EARIN-Light-Up
-      dockerfile: Dockerfile

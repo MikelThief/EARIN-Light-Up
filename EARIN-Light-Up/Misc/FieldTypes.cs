@@ -10,6 +10,7 @@ namespace EARIN_Light_Up
     {
         Empty,
         Lit,
+		StrongLit,
         Bulb,
         Wall,
         Zero,
