@@ -585,6 +585,11 @@ namespace EARIN_Light_Up
 							Console.Write("[w]");
 							break;
 						}
+						case FieldType.Zero:
+						{
+							Console.Write("[0]");
+							break;
+						}
 						case FieldType.One:
 						{
 							Console.Write("[1]");
