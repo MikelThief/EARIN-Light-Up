@@ -16,6 +16,7 @@ namespace EARIN_Light_Up
         Zero,
         One,
         Two,
-        Three
+        Three,
+		Four
     }
 }

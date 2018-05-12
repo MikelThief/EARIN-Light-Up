@@ -44,21 +44,11 @@ namespace EARIN_Light_Up
 			var position = GetPositionByID(bulbPosition);
 			position.Deconstruct(out var bulbRow, out var bulbColumn);
 
+			if (!CheckNumberFieldBulbsSaturation(bulbRow, bulbColumn))
+				return false;
+
 			// check if new bulb is seen by another bulb
-			if (_board[bulbRow,bulbColumn].Type != FieldType.Empty)
-					return false;
-
-			// Check if Zero, One, Two, Three type fields have corresponding amount of bulbs around
-					for (uint rowCounter = 0; rowCounter < size; rowCounter++)
-			{
-				for (uint columnCounter = 0; columnCounter < size; columnCounter++)
-				{
-					if (!CheckNumberFieldBulbs(rowCounter, columnCounter))
-						return false;
-				}
-			}
-
-			return true;
+			return _board[bulbRow,bulbColumn].Type == FieldType.Empty;
 		}
 
 		public uint UniqueNodesVisited
@@ -158,6 +148,11 @@ namespace EARIN_Light_Up
 							field.Type = FieldType.Three;
 							break;
 						}
+						case "4":
+						{
+							field.Type = FieldType.Four;
+							break;
+						}
 						default:
 						{
 							throw new Exception("File could not be loaded. Structure Error at position [" + rowCounter +
@@ -236,6 +231,15 @@ namespace EARIN_Light_Up
 					{
 						return false;
 					}
+				}
+			}
+			// Check if Zero, One, Two, Three type fields have corresponding amount of bulbs around
+			for (uint rowCounter = 0; rowCounter < size; rowCounter++)
+			{
+				for (uint columnCounter = 0; columnCounter < size; columnCounter++)
+				{
+					if (!CheckNumberFieldBulbs(rowCounter, columnCounter))
+						return false;
 				}
 			}
 
@@ -353,7 +357,7 @@ namespace EARIN_Light_Up
 				if (column > 0 && _board[row, column - 1].Type == FieldType.Bulb)
 					return false;
 				// check West
-				if (column < size - 1 && _board[row, column - 1].Type == FieldType.Bulb)
+				if (column < size - 1 && _board[row, column + 1].Type == FieldType.Bulb)
 					return false;
 			}
 
@@ -370,14 +374,119 @@ namespace EARIN_Light_Up
 				if (column > 0 && _board[row, column - 1].Type == FieldType.Bulb)
 					bulbCounter += 1;
 				// check West
-				if (column < size - 1 && _board[row, column - 1].Type == FieldType.Bulb)
+				if (column < size - 1 && _board[row, column + 1].Type == FieldType.Bulb)
+					bulbCounter += 1;
+
+				if (bulbCounter != 1)
+					return false;
+			}
+
+			if (_board[row, column].Type == FieldType.Two)
+			{
+				uint bulbCounter = default;
+				// check North
+				if (row > 0 && _board[row - 1, column].Type == FieldType.Bulb)
+					bulbCounter += 1;
+				// check South
+				if (row < size - 1 && _board[row + 1, column].Type == FieldType.Bulb)
+					bulbCounter += 1;
+				// check East
+				if (column > 0 && _board[row, column - 1].Type == FieldType.Bulb)
+					bulbCounter += 1;
+				// check West
+				if (column < size - 1 && _board[row, column + 1].Type == FieldType.Bulb)
+					bulbCounter += 1;
+
+				if (bulbCounter != 2)
+					return false;
+			}
+
+			if (_board[row, column].Type == FieldType.Three)
+			{
+				uint bulbCounter = default;
+				// check North
+				if (row > 0 && _board[row - 1, column].Type == FieldType.Bulb)
+					bulbCounter += 1;
+				// check South
+				if (row < size - 1 && _board[row + 1, column].Type == FieldType.Bulb)
+					bulbCounter += 1;
+				// check East
+				if (column > 0 && _board[row, column - 1].Type == FieldType.Bulb)
+					bulbCounter += 1;
+				// check West
+				if (column < size - 1 && _board[row, column + 1].Type == FieldType.Bulb)
+					bulbCounter += 1;
+
+				if (bulbCounter != 3)
+					return false;
+			}
+			if (_board[row, column].Type == FieldType.Four)
+			{
+				uint bulbCounter = default;
+				// check North
+				if (row > 0 && _board[row - 1, column].Type == FieldType.Bulb)
+					bulbCounter += 1;
+				// check South
+				if (row < size - 1 && _board[row + 1, column].Type == FieldType.Bulb)
+					bulbCounter += 1;
+				// check East
+				if (column > 0 && _board[row, column - 1].Type == FieldType.Bulb)
+					bulbCounter += 1;
+				// check West
+				if (column < size - 1 && _board[row, column + 1].Type == FieldType.Bulb)
+					bulbCounter += 1;
+
+				if (bulbCounter != 4)
+					return false;
+			}
+
+			return true;
+		}
+
+		private bool CheckNumberFieldBulbsSaturation(uint row, uint column)
+		{
+			if (_board[row, column].Type == FieldType.Wall ||
+				_board[row, column].Type == FieldType.Empty ||
+				_board[row, column].Type == FieldType.Bulb)
+				return true;
+
+			if (_board[row, column].Type == FieldType.Zero)
+			{
+				// check North
+				if (row > 0 && _board[row - 1, column].Type == FieldType.Bulb)
+					return false;
+				// check South
+				if (row < size - 1 && _board[row + 1, column].Type == FieldType.Bulb)
+					return false;
+				// check East
+				if (column > 0 && _board[row, column - 1].Type == FieldType.Bulb)
+					return false;
+				// check West
+				if (column < size - 1 && _board[row, column + 1].Type == FieldType.Bulb)
+					return false;
+			}
+
+			if (_board[row, column].Type == FieldType.One)
+			{
+				uint bulbCounter = default;
+				// check North
+				if (row > 0 && _board[row - 1, column].Type == FieldType.Bulb)
+					bulbCounter += 1;
+				// check South
+				if (row < size - 1 && _board[row + 1, column].Type == FieldType.Bulb)
+					bulbCounter += 1;
+				// check East
+				if (column > 0 && _board[row, column - 1].Type == FieldType.Bulb)
+					bulbCounter += 1;
+				// check West
+				if (column < size - 1 && _board[row, column + 1].Type == FieldType.Bulb)
 					bulbCounter += 1;
 
 				if (bulbCounter > 1)
 					return false;
 			}
 
-			if (_board[row, column].Type == FieldType.One)
+			if (_board[row, column].Type == FieldType.Two)
 			{
 				uint bulbCounter = default;
 				// check North
@@ -390,14 +499,14 @@ namespace EARIN_Light_Up
 				if (column > 0 && _board[row, column - 1].Type == FieldType.Bulb)
 					bulbCounter += 1;
 				// check West
-				if (column < size - 1 && _board[row, column - 1].Type == FieldType.Bulb)
+				if (column < size - 1 && _board[row, column + 1].Type == FieldType.Bulb)
 					bulbCounter += 1;
 
 				if (bulbCounter > 2)
 					return false;
 			}
 
-			if (_board[row, column].Type == FieldType.One)
+			if (_board[row, column].Type == FieldType.Three)
 			{
 				uint bulbCounter = default;
 				// check North
@@ -410,14 +519,98 @@ namespace EARIN_Light_Up
 				if (column > 0 && _board[row, column - 1].Type == FieldType.Bulb)
 					bulbCounter += 1;
 				// check West
-				if (column < size - 1 && _board[row, column - 1].Type == FieldType.Bulb)
+				if (column < size - 1 && _board[row, column + 1].Type == FieldType.Bulb)
 					bulbCounter += 1;
 
 				if (bulbCounter > 3)
 					return false;
 			}
+			if (_board[row, column].Type == FieldType.Four)
+			{
+				uint bulbCounter = default;
+				// check North
+				if (row > 0 && _board[row - 1, column].Type == FieldType.Bulb)
+					bulbCounter += 1;
+				// check South
+				if (row < size - 1 && _board[row + 1, column].Type == FieldType.Bulb)
+					bulbCounter += 1;
+				// check East
+				if (column > 0 && _board[row, column - 1].Type == FieldType.Bulb)
+					bulbCounter += 1;
+				// check West
+				if (column < size - 1 && _board[row, column + 1].Type == FieldType.Bulb)
+					bulbCounter += 1;
+
+				if (bulbCounter > 4)
+					return false;
+			}
 
 			return true;
+		}
+
+		public void Draw()
+		{
+			for (uint rowCounter = 0; rowCounter < size; rowCounter++)
+			{
+				for (uint columnCounter = 0; columnCounter < size; columnCounter++)
+				{
+					switch (_board[rowCounter, columnCounter].Type)
+					{
+						case FieldType.Empty:
+						{
+						    Console.Write("[ ]");
+							break;
+						}
+						case FieldType.Bulb:
+						{
+							Console.Write("[b]", Color.LightYellow);
+							break;
+						}
+						case FieldType.Lit:
+						{
+							Console.BackgroundColor = Color.LightYellow;
+							Console.Write("[ ]");
+							Console.BackgroundColor = Color.Black;
+								break;
+						}
+						case FieldType.StrongLit:
+						{
+							Console.BackgroundColor = Color.Yellow;
+							Console.Write("[ ]");
+							Console.BackgroundColor = Color.Black;
+							break;
+						}
+						case FieldType.Wall:
+						{
+							Console.Write("[w]");
+							break;
+						}
+						case FieldType.One:
+						{
+							Console.Write("[1]");
+							break;
+						}
+						case FieldType.Two:
+						{
+							Console.Write("[2]");
+							break;
+						}
+						case FieldType.Three:
+						{
+							Console.Write("[3]");
+							break;
+						}
+						case FieldType.Four:
+						{
+							Console.Write("[4]");
+							break;
+						}
+						default:
+							throw new Exception("Cannot draw that field.");
+					}
+				}
+				Console.WriteLine();
+			}
 		}
 	}
 }

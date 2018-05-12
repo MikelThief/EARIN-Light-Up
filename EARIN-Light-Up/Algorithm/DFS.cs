@@ -17,6 +17,8 @@ namespace EARIN_Light_Up.Algorithm
 
 		List<Board> solutions = new List<Board>();
 
+
+
         public void Perform(Board srcboard, uint depth, uint numberOfFields)
         {
             _numberOfFields = numberOfFields;
@@ -26,19 +28,24 @@ namespace EARIN_Light_Up.Algorithm
 
         private void Search(uint depth)
         {
-	        if (depth == 0)
-	        {
-		        solutions.Add(Board);
-		        return;
-	        }
-			for (uint counter = _numberOfFields-depth; counter < _numberOfFields; counter++)
-            {
-	            if (Validator.ValidateMove(Board, counter))
+	        uint counter = _numberOfFields - depth;
+			Console.WriteLine("================================");
+			
+			for (; counter < _numberOfFields; ++counter)
+			{
+				if (Validator.ValidateMove(Board, counter))
+				{
+					Board.PutBulb(counter);
+					Search(--depth);
+					Board.RemoveBulb(counter);
+				}
+
+	            if (counter == _numberOfFields - 1 && Validator.ValidateBoard(Board))
 	            {
-		            Board.PutBulb(counter);
-		            Search(--depth);
-		            Board.RemoveBulb(counter);
-	            }
+					Board.Draw();
+		            solutions.Add(Board);
+		            return;
+				}
             }
 		}
     }
