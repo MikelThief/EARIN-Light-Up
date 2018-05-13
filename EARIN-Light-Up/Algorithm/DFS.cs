@@ -16,25 +16,25 @@ namespace EARIN_Light_Up.Algorithm
     {
         private uint _numberOfFields { get; set; }
         private Board Board { get; set; }
-
-
+		private BigInteger Visits { get; set; }
 
         public void Perform(Board srcboard, uint depth, uint numberOfFields)
         {
-	        Console.WriteLine();
+			Console.WriteLine();
 	        Console.WriteLine();
 	        Console.WriteLine();
 			_numberOfFields = numberOfFields;
             Board = srcboard;
 
 	        Search(0);
-		}
+	        Console.WriteLine("DFS traversed whole tree.", Color.Aqua);
+        }
 
         private void Search(uint depth)
         {
 	        if (Board.ValidateSolution())
 	        {
-				Console.WriteLine("Solution Found:", Color.GreenYellow);
+				Console.WriteLine("Visits:" + ++Visits, Color.GreenYellow);
 		        Board.Draw();
 				Console.WriteLine();
 				return;
@@ -45,8 +45,10 @@ namespace EARIN_Light_Up.Algorithm
 		        if (Board.ValidateMove(counter))
 		        {
 					Board.PutBulb(counter);
+			        Visits += 1;
 					Search(1+counter);
 					Board.RemoveBulb(counter);
+			        Visits += 1;
 				}
 	        }
 		}

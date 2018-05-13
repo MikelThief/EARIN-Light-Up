@@ -563,12 +563,12 @@ namespace EARIN_Light_Up
 						}
 						case FieldType.Bulb:
 						{
-							Console.Write("[b]", Color.LightYellow);
+							Console.Write("[b]", Color.Yellow);
 							break;
 						}
 						case FieldType.Lit:
 						{
-							Console.BackgroundColor = Color.LightYellow;
+							Console.BackgroundColor = Color.Yellow;
 							Console.Write("[ ]");
 							Console.BackgroundColor = Color.Black;
 								break;
