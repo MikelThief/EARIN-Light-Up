@@ -11,10 +11,10 @@ namespace EARIN_Light_Up.Algorithm
         private Board Board { get; set; }
 		private BigInteger Visits { get; set; }
 
-	    public DFS(uint numberOfFields, Board board)
+	    public DFS(Board board)
 	    {
 		    this.Board = board;
-		    this._numberOfFields = numberOfFields;
+		    this._numberOfFields = board.size * board.size;
 	    }
         public void Perform()
         {

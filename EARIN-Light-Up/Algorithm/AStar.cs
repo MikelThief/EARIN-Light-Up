@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using C5;
+using Priority_Queue;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,17 +14,18 @@ namespace EARIN_Light_Up.Algorithm
 		private Board Board { get; set; }
 		private BigInteger Visits { get; set; }
 		private ulong MaxProfit { get; set; }
-		private IPriorityQueue<Field> openSet;
+		private FastPriorityQueue<Field> openSet;
 
 		public AStar(Board board)
 		{
 			this.Board = board;
 			this.MaxProfit = Board.GetMaxProfit();
+			openSet = new FastPriorityQueue<Field>((int) (board.size * board.size));
 		}
 
 		public void Perform(Board srcBoard, uint numberOfField)
 		{
-
+		 	
 		}
 	}
 }
