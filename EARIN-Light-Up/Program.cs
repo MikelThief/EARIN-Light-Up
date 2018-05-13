@@ -13,9 +13,9 @@ namespace EARIN_Light_Up
         {
             var board = new Board("testboard22.txt");
 
-	        var DFSbox = new DFS();
+	        var DFSbox = new DFS(board.size * board.size, board);
 
-			DFSbox.Perform(board, board.size * board.size, board.size * board.size);
+			DFSbox.Perform();
         }
     }
 }

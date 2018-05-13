@@ -11,13 +11,16 @@ namespace EARIN_Light_Up.Algorithm
         private Board Board { get; set; }
 		private BigInteger Visits { get; set; }
 
-        public void Perform(Board srcboard, uint depth, uint numberOfFields)
+	    public DFS(uint numberOfFields, Board board)
+	    {
+		    this.Board = board;
+		    this._numberOfFields = numberOfFields;
+	    }
+        public void Perform()
         {
 			Console.WriteLine();
 	        Console.WriteLine();
 	        Console.WriteLine();
-			_numberOfFields = numberOfFields;
-            Board = srcboard;
 
 	        Search(0);
 	        Console.WriteLine("DFS traversed whole tree.", Color.Aqua);
@@ -27,7 +30,7 @@ namespace EARIN_Light_Up.Algorithm
         {
 	        if (Board.ValidateSolution())
 	        {
-				Console.WriteLine("Visits:" + ++Visits, Color.GreenYellow);
+				Console.WriteLine("Visits:" + ++Visits, Color.Green);
 		        Board.Draw();
 				Console.WriteLine();
 				return;

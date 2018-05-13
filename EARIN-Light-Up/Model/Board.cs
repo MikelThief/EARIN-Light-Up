@@ -84,10 +84,10 @@ namespace EARIN_Light_Up
 		/// <param name="filePath">path to a file with a board</param>
 		private void LoadBoard(string filePath)
 		{
-			string fileContent = default(string);
+			string fileContent = default;
 			try
 			{
-				using (System.IO.StreamReader streamReader = new System.IO.StreamReader(filePath))
+				using (var streamReader = new StreamReader(filePath))
 				{
 					fileContent = streamReader.ReadToEnd().Replace(Environment.NewLine, "");
 				}
@@ -97,7 +97,7 @@ namespace EARIN_Light_Up
 				Console.WriteLine(e, Color.Red);
 			}
 
-			uint fieldID = default(uint);
+			uint fieldID = default;
 
 			for (uint rowCounter = 0; rowCounter < size; rowCounter++)
 			{
@@ -109,7 +109,7 @@ namespace EARIN_Light_Up
 						Column = columnCounter,
 						Id = fieldID
 					};
-					string pointer = fileContent[(int) fieldID].ToString();
+					var pointer = fileContent[(int) fieldID].ToString();
 					switch (pointer)
 					{
 						case "_":
@@ -285,8 +285,8 @@ namespace EARIN_Light_Up
 							}
 
 						}
-					_board[rowCounter, columnCounter].DigitFieldAround = digitFieldsAroundCounter;
-					_board[rowCounter, columnCounter].SumOfDigitsAround = sumOfdigitFieldsAround;
+					_board[rowCounter, columnCounter].Profit =
+						(byte) (digitFieldsAroundCounter * sumOfdigitFieldsAround);
 				}
 			}
 
@@ -741,6 +741,20 @@ namespace EARIN_Light_Up
 				}
 				Console.WriteLine();
 			}
+		}
+
+		public ulong GetMaxProfit()
+		{
+			ulong profit = default;
+			for (uint rowCounter = 0; rowCounter < size; rowCounter++)
+			{
+				for (uint columnCounter = 0; columnCounter < size; columnCounter++)
+				{
+					profit += _board[rowCounter, columnCounter].Profit;
+				}
+			}
+
+			return profit;
 		}
 	}
 }
