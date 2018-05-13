@@ -11,7 +11,7 @@ namespace EARIN_Light_Up
     {
         static void Main()
         {
-            var board = new Board("testboard.txt");
+            var board = new Board("testboard22.txt");
 
 	        var DFSbox = new DFS();
 

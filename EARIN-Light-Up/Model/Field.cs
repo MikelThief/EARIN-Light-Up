@@ -13,5 +13,7 @@ namespace EARIN_Light_Up
         public uint Row { get; set; }
         public uint Column { get; set; }
         public byte Visits { get; set; }
+		public byte DigitFieldAround { get; set; }
+		public byte SumOfDigitsAround { get; set; }
     }
 }

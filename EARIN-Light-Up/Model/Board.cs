@@ -165,6 +165,131 @@ namespace EARIN_Light_Up
 				}
 			}
 
+			for (uint rowCounter = 0; rowCounter < size; rowCounter++)
+			{
+				for (uint columnCounter = 0; columnCounter < size; columnCounter++)
+				{
+					byte digitFieldsAroundCounter = default;
+					byte sumOfdigitFieldsAround = default;
+					if (rowCounter > 0)
+						switch (_board[rowCounter - 1, columnCounter].Type)
+						{
+							case FieldType.One:
+							{
+								++digitFieldsAroundCounter;
+								sumOfdigitFieldsAround += 1;
+								break;
+							}
+							case FieldType.Two:
+							{
+								++digitFieldsAroundCounter;
+								sumOfdigitFieldsAround += 2;
+								break;
+							}
+							case FieldType.Three:
+							{
+								++digitFieldsAroundCounter;
+								sumOfdigitFieldsAround += 3;
+								break;
+							}
+							case FieldType.Four:
+							{
+								++digitFieldsAroundCounter;
+								sumOfdigitFieldsAround += 4;
+								break;
+							}
+						}
+					if (rowCounter < size - 1)
+						switch (_board[rowCounter + 1, columnCounter].Type)
+						{
+							case FieldType.One:
+							{
+								++digitFieldsAroundCounter;
+								sumOfdigitFieldsAround += 1;
+								break;
+							}
+							case FieldType.Two:
+							{
+								++digitFieldsAroundCounter;
+								sumOfdigitFieldsAround += 2;
+								break;
+							}
+							case FieldType.Three:
+							{
+								++digitFieldsAroundCounter;
+								sumOfdigitFieldsAround += 3;
+								break;
+							}
+							case FieldType.Four:
+							{
+								++digitFieldsAroundCounter;
+								sumOfdigitFieldsAround += 4;
+								break;
+							}
+						}
+					if (columnCounter < size - 1)
+						switch (_board[rowCounter, columnCounter + 1].Type)
+						{
+							case FieldType.One:
+							{
+								++digitFieldsAroundCounter;
+								sumOfdigitFieldsAround += 1;
+								break;
+							}
+							case FieldType.Two:
+							{
+								++digitFieldsAroundCounter;
+								sumOfdigitFieldsAround += 2;
+								break;
+							}
+							case FieldType.Three:
+							{
+								++digitFieldsAroundCounter;
+								sumOfdigitFieldsAround += 3;
+								break;
+							}
+							case FieldType.Four:
+							{
+								++digitFieldsAroundCounter;
+								sumOfdigitFieldsAround += 4;
+								break;
+							}
+
+						}
+					if (columnCounter > 0)
+						switch (_board[rowCounter, columnCounter - 1].Type)
+						{
+							case FieldType.One:
+							{
+								++digitFieldsAroundCounter;
+								sumOfdigitFieldsAround += 1;
+								break;
+							}
+							case FieldType.Two:
+							{
+								++digitFieldsAroundCounter;
+								sumOfdigitFieldsAround += 2;
+								break;
+							}
+							case FieldType.Three:
+							{
+								++digitFieldsAroundCounter;
+								sumOfdigitFieldsAround += 3;
+								break;
+							}
+							case FieldType.Four:
+							{
+								++digitFieldsAroundCounter;
+								sumOfdigitFieldsAround += 4;
+								break;
+							}
+
+						}
+					_board[rowCounter, columnCounter].DigitFieldAround = digitFieldsAroundCounter;
+					_board[rowCounter, columnCounter].SumOfDigitsAround = sumOfdigitFieldsAround;
+				}
+			}
+
 			Console.WriteLine("Board loaded.", Color.Aqua);
 		}
 

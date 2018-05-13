@@ -1,13 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Text;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Numerics;
-using EARIN_Light_Up.Misc;
 using Console = Colorful.Console;
 
 namespace EARIN_Light_Up.Algorithm
