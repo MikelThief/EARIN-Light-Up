@@ -10,13 +10,12 @@ using Console = Colorful.Console;
 
 namespace EARIN_Light_Up
 {
-	public class Board : StablePriorityQueueNode, IEquatable<Board>
+	public class Board : IEquatable<Board>
 	{
 		public Board Parent;
 		public readonly uint size;
 		private Field[,] _board;
 		public long CurrentProfit { get; set; }
-		private uint lastMoveID { get; set; }
 
 		public BigInteger Visits
 		{
@@ -181,148 +180,153 @@ namespace EARIN_Light_Up
 				}
 			}
 
-			CalculatePriorities();
+			CalculateFieldPriorities();
 
 			Console.WriteLine("Board loaded.", Color.Aqua);
 		}
 
-		private void CalculatePriorities()
+		private void CalculateFieldPriorities()
 		{
 			for (uint rowCounter = 0; rowCounter < size; rowCounter++)
 			{
 				for (uint columnCounter = 0; columnCounter < size; columnCounter++)
 				{
-					byte digitFieldsAroundCounter = default;
-					byte sumOfdigitFieldsAround = default;
-					if (rowCounter > 0)
-						switch (_board[rowCounter - 1, columnCounter].Type)
-						{
-							case FieldType.One:
-								{
-									++digitFieldsAroundCounter;
-									sumOfdigitFieldsAround += 1;
-									break;
-								}
-							case FieldType.Two:
-								{
-									++digitFieldsAroundCounter;
-									sumOfdigitFieldsAround += 2;
-									break;
-								}
-							case FieldType.Three:
-								{
-									++digitFieldsAroundCounter;
-									sumOfdigitFieldsAround += 3;
-									break;
-								}
-							case FieldType.Four:
-								{
-									++digitFieldsAroundCounter;
-									sumOfdigitFieldsAround += 4;
-									break;
-								}
-						}
-					if (rowCounter < size - 1)
-						switch (_board[rowCounter + 1, columnCounter].Type)
-						{
-							case FieldType.One:
-								{
-									++digitFieldsAroundCounter;
-									sumOfdigitFieldsAround += 1;
-									break;
-								}
-							case FieldType.Two:
-								{
-									++digitFieldsAroundCounter;
-									sumOfdigitFieldsAround += 2;
-									break;
-								}
-							case FieldType.Three:
-								{
-									++digitFieldsAroundCounter;
-									sumOfdigitFieldsAround += 3;
-									break;
-								}
-							case FieldType.Four:
-								{
-									++digitFieldsAroundCounter;
-									sumOfdigitFieldsAround += 4;
-									break;
-								}
-						}
-					if (columnCounter < size - 1)
-						switch (_board[rowCounter, columnCounter + 1].Type)
-						{
-							case FieldType.One:
-								{
-									++digitFieldsAroundCounter;
-									sumOfdigitFieldsAround += 1;
-									break;
-								}
-							case FieldType.Two:
-								{
-									++digitFieldsAroundCounter;
-									sumOfdigitFieldsAround += 2;
-									break;
-								}
-							case FieldType.Three:
-								{
-									++digitFieldsAroundCounter;
-									sumOfdigitFieldsAround += 3;
-									break;
-								}
-							case FieldType.Four:
-								{
-									++digitFieldsAroundCounter;
-									sumOfdigitFieldsAround += 4;
-									break;
-								}
-
-						}
-					if (columnCounter > 0)
-						switch (_board[rowCounter, columnCounter - 1].Type)
-						{
-							case FieldType.One:
-								{
-									++digitFieldsAroundCounter;
-									sumOfdigitFieldsAround += 1;
-									break;
-								}
-							case FieldType.Two:
-								{
-									++digitFieldsAroundCounter;
-									sumOfdigitFieldsAround += 2;
-									break;
-								}
-							case FieldType.Three:
-								{
-									++digitFieldsAroundCounter;
-									sumOfdigitFieldsAround += 3;
-									break;
-								}
-							case FieldType.Four:
-								{
-									++digitFieldsAroundCounter;
-									sumOfdigitFieldsAround += 4;
-									break;
-								}
-
-						}
-
-					if (_board[rowCounter, columnCounter].Type == FieldType.Empty)
-					{
-						_board[rowCounter, columnCounter].priorityPair =
-							new Tuple<int?, int?>(digitFieldsAroundCounter, sumOfdigitFieldsAround);
-						//_board[rowCounter, columnCounter].Profit =
-						//	(byte)(digitFieldsAroundCounter * sumOfdigitFieldsAround);
-						CurrentProfit += (long)(digitFieldsAroundCounter * sumOfdigitFieldsAround);
-					}
-					else
-					{
-						_board[rowCounter, columnCounter].priorityPair = new Tuple<int?, int?>(null, null);
-						//_board[rowCounter, columnCounter].Profit = -1;
-					}
+					CalculateFieldPriority(rowCounter, columnCounter);
 				}
+			}
+		}
+
+		private void CalculateFieldPriority(uint rowCounter, uint columnCounter)
+		{
+			byte digitFieldsAroundCounter = default;
+			byte sumOfdigitFieldsAround = default;
+			if (rowCounter > 0)
+				switch (_board[rowCounter - 1, columnCounter].Type)
+				{
+					case FieldType.One:
+						{
+							++digitFieldsAroundCounter;
+							sumOfdigitFieldsAround += 1;
+							break;
+						}
+					case FieldType.Two:
+						{
+							++digitFieldsAroundCounter;
+							sumOfdigitFieldsAround += 2;
+							break;
+						}
+					case FieldType.Three:
+						{
+							++digitFieldsAroundCounter;
+							sumOfdigitFieldsAround += 3;
+							break;
+						}
+					case FieldType.Four:
+						{
+							++digitFieldsAroundCounter;
+							sumOfdigitFieldsAround += 4;
+							break;
+						}
+				}
+			if (rowCounter < size - 1)
+				switch (_board[rowCounter + 1, columnCounter].Type)
+				{
+					case FieldType.One:
+						{
+							++digitFieldsAroundCounter;
+							sumOfdigitFieldsAround += 1;
+							break;
+						}
+					case FieldType.Two:
+						{
+							++digitFieldsAroundCounter;
+							sumOfdigitFieldsAround += 2;
+							break;
+						}
+					case FieldType.Three:
+						{
+							++digitFieldsAroundCounter;
+							sumOfdigitFieldsAround += 3;
+							break;
+						}
+					case FieldType.Four:
+						{
+							++digitFieldsAroundCounter;
+							sumOfdigitFieldsAround += 4;
+							break;
+						}
+				}
+			if (columnCounter < size - 1)
+				switch (_board[rowCounter, columnCounter + 1].Type)
+				{
+					case FieldType.One:
+						{
+							++digitFieldsAroundCounter;
+							sumOfdigitFieldsAround += 1;
+							break;
+						}
+					case FieldType.Two:
+						{
+							++digitFieldsAroundCounter;
+							sumOfdigitFieldsAround += 2;
+							break;
+						}
+					case FieldType.Three:
+						{
+							++digitFieldsAroundCounter;
+							sumOfdigitFieldsAround += 3;
+							break;
+						}
+					case FieldType.Four:
+						{
+							++digitFieldsAroundCounter;
+							sumOfdigitFieldsAround += 4;
+							break;
+						}
+
+				}
+			if (columnCounter > 0)
+				switch (_board[rowCounter, columnCounter - 1].Type)
+				{
+					case FieldType.One:
+						{
+							++digitFieldsAroundCounter;
+							sumOfdigitFieldsAround += 1;
+							break;
+						}
+					case FieldType.Two:
+						{
+							++digitFieldsAroundCounter;
+							sumOfdigitFieldsAround += 2;
+							break;
+						}
+					case FieldType.Three:
+						{
+							++digitFieldsAroundCounter;
+							sumOfdigitFieldsAround += 3;
+							break;
+						}
+					case FieldType.Four:
+						{
+							++digitFieldsAroundCounter;
+							sumOfdigitFieldsAround += 4;
+							break;
+						}
+
+				}
+
+			if (_board[rowCounter, columnCounter].Type == FieldType.Empty)
+			{
+				_board[rowCounter, columnCounter].priorityPair =
+					new Tuple<int?, int?>(digitFieldsAroundCounter, sumOfdigitFieldsAround);
+				//_board[rowCounter, columnCounter].Profit =
+				//	(byte)(digitFieldsAroundCounter * sumOfdigitFieldsAround);
+				CurrentProfit += (long)(digitFieldsAroundCounter * sumOfdigitFieldsAround);
+			}
+			else
+			{
+				_board[rowCounter, columnCounter].priorityPair = new Tuple<int?, int?>(null, null);
+				//_board[rowCounter, columnCounter].Profit = -1;
 			}
 		}
 
@@ -345,6 +349,7 @@ namespace EARIN_Light_Up
 					}
 				}
 			}
+			// TODO: Add priority removal
 		}
 
 		public void RemoveBulb(uint fieldID)
@@ -361,6 +366,7 @@ namespace EARIN_Light_Up
 					}
 				}
 			}
+			// TODO: Add priority restore
 		}
 
 		public Tuple<uint, uint> GetPositionByID(uint fieldID)
@@ -837,6 +843,9 @@ namespace EARIN_Light_Up
 		public static bool operator !=(Board lhs, Board rhs) => !(lhs.Equals(rhs));
 		public bool Equals(Board srcBoard)
 		{
+			if (srcBoard == null || GetType() != srcBoard.GetType())
+				return false;
+
 			if (this.CurrentProfit != srcBoard.CurrentProfit || this.Visits == srcBoard.Visits || this.size == srcBoard.size)
 				return false;
 
@@ -860,7 +869,21 @@ namespace EARIN_Light_Up
 
 		public List<Board> GetSuccessors()
 		{
+			var successorFields = RunHeuristics();
 
+			var successorBoards = new List<Board>();
+
+			while (successorFields.Count > 0)
+			{
+				var fieldID = successorFields.Dequeue();
+
+				if (ValidateMove((uint)fieldID))	// this check is probably redundant as every element in the queue has priority i.e. move can be performed
+				{
+					var tempBoard = new Board(this);
+					tempBoard.PutBulb((uint)fieldID);
+					successorBoards.Add(tempBoard);
+				}
+			}
 
 
 			return null;
@@ -888,6 +911,9 @@ namespace EARIN_Light_Up
 
 			return successors;
 		}
-		
+		// TODO: Implement GetHashCode
+		// https://blogs.msdn.microsoft.com/ericlippert/2011/02/28/guidelines-and-rules-for-gethashcode/
+		// https://stackoverflow.com/questions/371328/why-is-it-important-to-override-gethashcode-when-equals-method-is-overridden
+
 	}
 }

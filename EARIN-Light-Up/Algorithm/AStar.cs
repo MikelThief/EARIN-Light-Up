@@ -16,8 +16,8 @@ namespace EARIN_Light_Up.Algorithm
 		private Board Board { get; set; }
 		private BigInteger Visits { get; set; }
 		private long MaxProfit { get; set; }
-		private StablePriorityQueue<Board> openSet;	// Priority in list is Board.CurrentProfit
-		private StablePriorityQueue<Board> closedSet;
+		private SimplePriorityQueue<Board> openSet;	// Priority in list is Board.CurrentProfit
+		private SimplePriorityQueue<Board> closedSet;
 
 		// goal node does not exist - it is computed on the fly	= ValidateSolution()
 		// h() - estimated distance to the goal = CurrentProfit in Board. Should approach 0 for a success
@@ -34,14 +34,14 @@ namespace EARIN_Light_Up.Algorithm
 			this.solutions = new List<Board>();
 			this.Board = new Board(board);
 			this.MaxProfit = Board.GetProfit();
-			openSet = new StablePriorityQueue<Board>(Int32.MaxValue);
-			closedSet = new StablePriorityQueue<Board>(Int32.MaxValue);
+			openSet = new SimplePriorityQueue<Board>();
+			closedSet = new SimplePriorityQueue<Board>();
 		}
 
-		public void Perform(Board srcBoard)
+		public void Perform()
 		{
 			// add root as a first element (frontier)
-			openSet.Enqueue(srcBoard, srcBoard.CurrentProfit); 
+			openSet.Enqueue(Board, Board.CurrentProfit); 
 
 			while (openSet.Count > 0)
 			{
@@ -50,7 +50,7 @@ namespace EARIN_Light_Up.Algorithm
 				if (currentBoard.ValidateSolution())
 					solutions.Add(currentBoard);
 
-				var successors = new List<Board>();
+				var successors = currentBoard.GetSuccessors();
 			}
 		}
 	}

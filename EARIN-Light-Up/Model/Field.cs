@@ -7,7 +7,7 @@ using Priority_Queue;
 
 namespace EARIN_Light_Up
 {
-    public class Field : FastPriorityQueueNode
+    public class Field
     {
         public FieldType Type { get; set; }
         public uint Id { get; set; }

@@ -14,8 +14,10 @@ namespace EARIN_Light_Up
             var board = new Board("testboard22.txt");
 
 	        var DFSbox = new DFS(board);
+			var AStarBox = new AStar(board);
 
 			DFSbox.Perform();
+			AStarBox.Perform();
         }
     }
 }
