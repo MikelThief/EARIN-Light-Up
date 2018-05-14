@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Numerics;
 using Console = Colorful.Console;
@@ -10,12 +11,12 @@ namespace EARIN_Light_Up.Algorithm
         private uint _numberOfFields { get; set; }
         private Board Board { get; set; }
 		private BigInteger Visits { get; set; }
+	    private List<Board> solutions;
 
 	    public DFS(Board board)
 	    {
-
-		    this.Board = new Board(board.size);
-		    this.Board.CopyBoard(board);
+			this.solutions = new List<Board>();
+		    this.Board = new Board(board);
 			this._numberOfFields = board.size * board.size;
 	    }
         public void Perform()
@@ -33,7 +34,9 @@ namespace EARIN_Light_Up.Algorithm
 	        if (Board.ValidateSolution())
 	        {
 				Console.WriteLine("Visits:" + ++Visits, Color.Green);
-		        Board.Draw();
+				var tempBoard = new Board(Board);
+				solutions.Add(tempBoard);
+		        tempBoard.Draw();
 				Console.WriteLine();
 				return;
 	        }

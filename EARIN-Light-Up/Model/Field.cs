@@ -14,7 +14,7 @@ namespace EARIN_Light_Up
         public uint Row { get; set; }
         public uint Column { get; set; }
         public byte Visits { get; set; }
-		public byte Profit { get; set; }
-		
+		//public int Profit { get; set; }
+		public Tuple<int?, int?> priorityPair { get; set; }
     }
 }
