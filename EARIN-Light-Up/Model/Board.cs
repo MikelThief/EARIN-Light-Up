@@ -2,15 +2,17 @@
 using System.Drawing;
 using System.IO;
 using System.Numerics;
+using Priority_Queue;
 using Console = Colorful.Console;
 
 
 namespace EARIN_Light_Up
 {
-	public class Board
+	public class Board : FastPriorityQueueNode
 	{
 		public readonly uint size;
 		private Field[,] _board;
+		public ulong CurrentProfit { get; set; }
 
 		public BigInteger Visits
 		{
@@ -76,6 +78,10 @@ namespace EARIN_Light_Up
 			this.size = (uint) File.ReadAllLines(filePath).Length;
 			this._board = new Field[size, size];
 			LoadBoard(filePath);
+		}
+		public Board(uint size)
+		{
+			this._board = new Field[size, size];
 		}
 
 		/// <summary>
@@ -287,6 +293,7 @@ namespace EARIN_Light_Up
 						}
 					_board[rowCounter, columnCounter].Profit =
 						(byte) (digitFieldsAroundCounter * sumOfdigitFieldsAround);
+					CurrentProfit += _board[rowCounter, columnCounter].Profit;
 				}
 			}
 
@@ -755,6 +762,47 @@ namespace EARIN_Light_Up
 			}
 
 			return profit;
+		}
+
+		public Field GetField(uint fieldID)
+		{
+			for (uint rowCounter = 0; rowCounter < size; rowCounter++)
+			{
+				for (uint columnCounter = 0; columnCounter < size; columnCounter++)
+				{
+					return _board[rowCounter, columnCounter];
+				}
+			}
+
+			throw new Exception("FieldID is outside board's index!");
+		}
+		public Field GetField(uint row, uint column)
+		{
+			if(row > size - 1 || column > size -1)
+				return _board[row, column];
+			else throw new Exception("Field position is outside board's grid!");
+		}
+
+		public void CopyBoard(Board srcBoard)
+		{
+			for (uint rowCounter = 0; rowCounter < size; rowCounter++)
+			{
+				for (uint columnCounter = 0; columnCounter < size; columnCounter++)
+				{
+					var field = new Field
+					{
+						Type = srcBoard.GetField(rowCounter, columnCounter).Type,
+						Column = srcBoard.GetField(rowCounter, columnCounter).Column,
+						Row = srcBoard.GetField(rowCounter, columnCounter).Row,
+						Id = srcBoard.GetField(rowCounter, columnCounter).Id,
+						Profit = srcBoard.GetField(rowCounter, columnCounter).Profit,
+						Visits = srcBoard.GetField(rowCounter, columnCounter).Visits
+					};
+					_board[rowCounter, columnCounter] = field;
+					this.CurrentProfit = srcBoard.CurrentProfit;
+					this.Visits = srcBoard.Visits;
+				}
+			}
 		}
 	}
 }

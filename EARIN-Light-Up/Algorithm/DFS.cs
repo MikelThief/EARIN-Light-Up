@@ -13,8 +13,10 @@ namespace EARIN_Light_Up.Algorithm
 
 	    public DFS(Board board)
 	    {
-		    this.Board = board;
-		    this._numberOfFields = board.size * board.size;
+
+		    this.Board = new Board(board.size);
+		    this.Board.CopyBoard(board);
+			this._numberOfFields = board.size * board.size;
 	    }
         public void Perform()
         {
