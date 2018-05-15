@@ -15,42 +15,22 @@ namespace EARIN_Light_Up
 		public Board Parent;
 		public readonly uint size;
 		private Field[,] _board;
-		public long CurrentProfit { get; set; }
 
-		public BigInteger Visits
-		{
-			get
-			{
-				BigInteger visits = 0;
-				for (uint rowCounter = 0; rowCounter < size; rowCounter++)
-				{
-					for (uint columnCounter = 0; columnCounter < size; columnCounter++)
-					{
-						visits += _board[rowCounter, columnCounter].Visits;
-					}
-				}
-
-				return visits;
-			}
-			set
-			{
-				for (uint rowCounter = 0; rowCounter < size; rowCounter++)
-				{
-					for (uint columnCounter = 0; columnCounter < size; columnCounter++)
-					{
-						_board[rowCounter, columnCounter].Visits = 0;
-					}
-				}
-			}
-		}
+		public BigInteger Visits { get; set; }
 
 		internal bool ValidateMove(uint bulbPosition)
 		{
 			var position = GetPositionByID(bulbPosition);
 			position.Deconstruct(out var bulbRow, out var bulbColumn);
 
-			if (!CheckNumberFieldBulbsSaturation(bulbRow, bulbColumn))
-				return false;
+			for (uint rowCounter = 0; rowCounter < size; rowCounter++)
+			{
+				for (uint columnCounter = 0; columnCounter < size; columnCounter++)
+				{
+					if (!CheckNumberFieldBulbsSaturation(rowCounter, columnCounter))
+						return false;
+				}
+			}
 
 			// check if new bulb is seen by another bulb
 			return _board[bulbRow,bulbColumn].Type == FieldType.Empty;
@@ -321,7 +301,6 @@ namespace EARIN_Light_Up
 					new Tuple<int?, int?>(digitFieldsAroundCounter, sumOfdigitFieldsAround);
 				//_board[rowCounter, columnCounter].Profit =
 				//	(byte)(digitFieldsAroundCounter * sumOfdigitFieldsAround);
-				CurrentProfit += (long)(digitFieldsAroundCounter * sumOfdigitFieldsAround);
 			}
 			else
 			{
@@ -344,12 +323,13 @@ namespace EARIN_Light_Up
 					if (_board[rowCounter, columnCounter].Id == fieldID)
 					{
 						_board[rowCounter, columnCounter].Type = FieldType.Bulb;
-						IlluminateFields(fieldID);
+						_board[rowCounter, columnCounter].priorityPair = new Tuple<int?, int?>(null, null);
+
+                        IlluminateFields(fieldID);
 						return;
 					}
 				}
 			}
-			// TODO: Add priority removal
 		}
 
 		public void RemoveBulb(uint fieldID)
@@ -361,12 +341,13 @@ namespace EARIN_Light_Up
 					if (_board[rowCounter, columnCounter].Id == fieldID)
 					{
 						_board[rowCounter, columnCounter].Type = FieldType.Empty;
-						DeIlluminateFields(fieldID);
+						CalculateFieldPriority(rowCounter, columnCounter);
+
+                        DeIlluminateFields(fieldID);
 						return;
 					}
 				}
 			}
-			// TODO: Add priority restore
 		}
 
 		public Tuple<uint, uint> GetPositionByID(uint fieldID)
@@ -419,7 +400,10 @@ namespace EARIN_Light_Up
 			for (int rowCounter = (int) bulbRow -1; rowCounter > -1; --rowCounter)
 			{
 				if (_board[rowCounter, bulbColumn].Type == FieldType.Empty)
+				{
 					_board[rowCounter, bulbColumn].Type = FieldType.Lit;
+				//	_board[rowCounter, bulbColumn].priorityPair = new Tuple<int?, int?>(0,0);
+                }
 				else if (_board[rowCounter, bulbColumn].Type == FieldType.Lit)
 					_board[rowCounter, bulbColumn].Type = FieldType.StrongLit;
 				else break;
@@ -429,8 +413,11 @@ namespace EARIN_Light_Up
 			for (int rowCounter = (int) bulbRow + 1; rowCounter < size; ++rowCounter)
 			{
 				if (_board[rowCounter, bulbColumn].Type == FieldType.Empty)
+				{
 					_board[rowCounter, bulbColumn].Type = FieldType.Lit;
-				else if (_board[rowCounter, bulbColumn].Type == FieldType.Lit)
+				//	_board[rowCounter, bulbColumn].priorityPair = new Tuple<int?, int?>(null, null);
+				}
+                else if (_board[rowCounter, bulbColumn].Type == FieldType.Lit)
 					_board[rowCounter, bulbColumn].Type = FieldType.StrongLit;
 				else break;
 			}
@@ -439,7 +426,10 @@ namespace EARIN_Light_Up
 			for (int columnCounter = (int) bulbColumn - 1; columnCounter > -1; --columnCounter)
 			{
 				if (_board[bulbRow, columnCounter].Type == FieldType.Empty)
+				{
 					_board[bulbRow, columnCounter].Type = FieldType.Lit;
+				//	_board[bulbRow, columnCounter].priorityPair = new Tuple<int?, int?>(null, null);
+                }
 				else if (_board[bulbRow, columnCounter].Type == FieldType.Lit)
 					_board[bulbRow, columnCounter].Type = FieldType.StrongLit;
 				else break;
@@ -449,8 +439,11 @@ namespace EARIN_Light_Up
 			for (int columnCounter = (int) bulbColumn + 1; columnCounter < size; ++columnCounter)
 			{
 				if (_board[bulbRow, columnCounter].Type == FieldType.Empty)
+				{
 					_board[bulbRow, columnCounter].Type = FieldType.Lit;
-				else if (_board[bulbRow, columnCounter].Type == FieldType.Lit)
+				//	_board[bulbRow, columnCounter].priorityPair = new Tuple<int?, int?>(null, null);
+				}
+                else if (_board[bulbRow, columnCounter].Type == FieldType.Lit)
 					_board[bulbRow, columnCounter].Type = FieldType.StrongLit;
 				else break;
 			}
@@ -465,7 +458,10 @@ namespace EARIN_Light_Up
 			for (int rowCounter = (int) bulbRow - 1; rowCounter > -1; --rowCounter)
 			{
 				if (_board[rowCounter, bulbColumn].Type == FieldType.Lit)
+				{
 					_board[rowCounter, bulbColumn].Type = FieldType.Empty;
+					CalculateFieldPriority((uint)rowCounter, bulbColumn);
+                }
 				else if (_board[rowCounter, bulbColumn].Type == FieldType.StrongLit)
 					_board[rowCounter, bulbColumn].Type = FieldType.Lit;
 				else break;
@@ -475,8 +471,11 @@ namespace EARIN_Light_Up
 			for (int rowCounter = (int) bulbRow + 1; rowCounter < size; ++rowCounter)
 			{
 				if (_board[rowCounter, bulbColumn].Type == FieldType.Lit)
+				{
 					_board[rowCounter, bulbColumn].Type = FieldType.Empty;
-				else if (_board[rowCounter, bulbColumn].Type == FieldType.StrongLit)
+					CalculateFieldPriority((uint)rowCounter, bulbColumn);
+				}
+                else if (_board[rowCounter, bulbColumn].Type == FieldType.StrongLit)
 					_board[rowCounter, bulbColumn].Type = FieldType.Lit;
 				else break;
 			}
@@ -485,7 +484,10 @@ namespace EARIN_Light_Up
 			for (int columnCounter = (int) bulbColumn - 1; columnCounter > -1; --columnCounter)
 			{
 				if (_board[bulbRow, columnCounter].Type == FieldType.Lit)
+				{
 					_board[bulbRow, columnCounter].Type = FieldType.Empty;
+					CalculateFieldPriority(bulbRow, (uint) columnCounter);
+                }
 				else if (_board[bulbRow, columnCounter].Type == FieldType.StrongLit)
 					_board[bulbRow, columnCounter].Type = FieldType.Lit;
 				else break;
@@ -495,8 +497,11 @@ namespace EARIN_Light_Up
 			for (int columnCounter = (int) bulbColumn + 1; columnCounter < size; ++columnCounter)
 			{
 				if (_board[bulbRow, columnCounter].Type == FieldType.Lit)
+				{
 					_board[bulbRow, columnCounter].Type = FieldType.Empty;
-				else if (_board[bulbRow, columnCounter].Type == FieldType.StrongLit)
+					CalculateFieldPriority(bulbRow, (uint)columnCounter);
+				}
+                else if (_board[bulbRow, columnCounter].Type == FieldType.StrongLit)
 					_board[bulbRow, columnCounter].Type = FieldType.Lit;
 				else break;
 			}
@@ -834,7 +839,6 @@ namespace EARIN_Light_Up
 						Visits = srcBoard.GetField(rowCounter, columnCounter).Visits
 					};
 					_board[rowCounter, columnCounter] = field;
-					this.CurrentProfit = srcBoard.CurrentProfit;
 					//this.Visits = srcBoard.Visits;
 				}
 			}
@@ -846,7 +850,7 @@ namespace EARIN_Light_Up
 			if (srcBoard == null || GetType() != srcBoard.GetType())
 				return false;
 
-			if (this.CurrentProfit != srcBoard.CurrentProfit || this.Visits == srcBoard.Visits || this.size == srcBoard.size)
+			if (this.GetProfit() != srcBoard.GetProfit() || this.Visits == srcBoard.Visits || this.size == srcBoard.size)
 				return false;
 
 			for (uint rowCounter = 0; rowCounter < size; rowCounter++)
@@ -867,26 +871,28 @@ namespace EARIN_Light_Up
 			return true;
 		}
 
-		public List<Board> GetSuccessors()
+		public List<List<int>> GetSuccessors()
 		{
 			var successorFields = RunHeuristics();
 
-			var successorBoards = new List<Board>();
+			var successorLayers = new List<List<int>>();
+
 
 			while (successorFields.Count > 0)
 			{
 				var fieldID = successorFields.Dequeue();
 
-				if (ValidateMove((uint)fieldID))	// this check is probably redundant as every element in the queue has priority i.e. move can be performed
+				if (ValidateMove((uint)fieldID))
 				{
-					var tempBoard = new Board(this);
-					tempBoard.PutBulb((uint)fieldID);
-					successorBoards.Add(tempBoard);
+					var currentBulbLayer = GetBulbsLayer();
+					currentBulbLayer.Add(fieldID);
+					currentBulbLayer.Sort();
+					successorLayers.Add(currentBulbLayer);
 				}
 			}
 
 
-			return null;
+			return successorLayers;
 		}
 
 		private SimplePriorityQueue<int> RunHeuristics()
@@ -904,16 +910,55 @@ namespace EARIN_Light_Up
 							.Deconstruct(out var digitFieldsAround, out var sumOfDigitFieldsAround);
 
 						successors.Enqueue((int) _board[rowCounter, columnCounter].Id,
-							CurrentProfit - (int) (digitFieldsAround * sumOfDigitFieldsAround));
+							this.GetProfit() - (int) (digitFieldsAround * sumOfDigitFieldsAround));
 					}
 				}
 			}
 
 			return successors;
 		}
+
+
 		// TODO: Implement GetHashCode
 		// https://blogs.msdn.microsoft.com/ericlippert/2011/02/28/guidelines-and-rules-for-gethashcode/
 		// https://stackoverflow.com/questions/371328/why-is-it-important-to-override-gethashcode-when-equals-method-is-overridden
 
+		public List<int> GetBulbsLayer()
+		{
+			var list = new List<int>();
+			for (uint rowCounter = 0; rowCounter < size; ++rowCounter)
+			{
+				for (uint columnCounter = 0; columnCounter < size; ++columnCounter)
+				{
+					if(_board[rowCounter, columnCounter].Type == FieldType.Bulb)
+						list.Add((int)_board[rowCounter, columnCounter].Id);
+				}
+			}
+			return list;
+		}
+
+		public void PutBulbsLayer(IEnumerable<int> list)
+		{
+			foreach (var bulb in list)
+			{
+				PutBulb((uint)bulb);
+			}
+		}
+
+		public int GetNumberOfLitFields()
+		{
+			int counter = default;
+			for (uint rowCounter = 0; rowCounter < size; ++rowCounter)
+			{
+				for (uint columnCounter = 0; columnCounter < size; ++columnCounter)
+				{
+					if (_board[rowCounter, columnCounter].Type == FieldType.Lit ||
+					    _board[rowCounter, columnCounter].Type == FieldType.StrongLit)
+						counter += 1;
+				}
+			}
+
+			return counter;
+		}
 	}
 }

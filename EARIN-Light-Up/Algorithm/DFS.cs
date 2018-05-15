@@ -26,17 +26,22 @@ namespace EARIN_Light_Up.Algorithm
 	        Console.WriteLine();
 
 	        Search(0);
+	        foreach (var solution in solutions)
+	        {
+		        Console.WriteLine("Visits:" + solution.Visits, Color.Green);
+                solution.Draw();
+	        }
 	        Console.WriteLine("DFS traversed whole tree.", Color.Aqua);
+	        Console.WriteLine();
         }
 
         private void Search(uint depth)
         {
 	        if (Board.ValidateSolution())
 	        {
-				Console.WriteLine("Visits:" + ++Visits, Color.Green);
 				var tempBoard = new Board(Board);
+		        tempBoard.Visits = this.Visits;
 				solutions.Add(tempBoard);
-		        tempBoard.Draw();
 				Console.WriteLine();
 				return;
 	        }
