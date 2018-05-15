@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing.Text;
 using System.Linq;
@@ -14,10 +15,13 @@ namespace EARIN_Light_Up.Algorithm
 		private List<Board> solutions;
 		private uint _numberOfFields { get; set; }
 		private Board Board { get; set; }
+		private Board PlainBoard { get; set; }
 		private BigInteger Visits { get; set; }
 		private long MaxProfit { get; set; }
 		private SimplePriorityQueue<Board> openSet;	// Priority in list is Board.CurrentProfit
 		private SimplePriorityQueue<Board> closedSet;
+		private SimplePriorityQueue<List<uint>> openSetexp;
+		private SimplePriorityQueue<List<uint>> closedSetexp;
 
 		// goal node does not exist - it is computed on the fly	= ValidateSolution()
 		// h() - estimated distance to the goal = CurrentProfit in Board. Should approach 0 for a success
@@ -33,19 +37,26 @@ namespace EARIN_Light_Up.Algorithm
 			//}
 			this.solutions = new List<Board>();
 			this.Board = new Board(board);
+			this.PlainBoard = new Board(board);
 			this.MaxProfit = Board.GetProfit();
-			openSet = new SimplePriorityQueue<Board>();
-			closedSet = new SimplePriorityQueue<Board>();
+			//openSet = new SimplePriorityQueue<Board>();
+			//closedSet = new SimplePriorityQueue<Board>();
 		}
 
 		public void Perform()
 		{
 			// add root as a first element (frontier)
-			openSet.Enqueue(Board, Board.CurrentProfit); 
+			//openSet.Enqueue(Board, Board.CurrentProfit);
+			
+			openSetexp.Enqueue(PlainBoard.GetBulbsLayerList(), PlainBoard.CurrentProfit);
 
-			while (openSet.Count > 0)
+			while (openSetexp.Count > 0)
 			{
-				Board currentBoard = openSet.Dequeue();
+				var currentBulbLayer = openSetexp.Dequeue();
+
+				var currentBoard = new Board(PlainBoard);
+				currentBoard.PutBulbsLayer(currentBulbLayer);
+				//Board currentBoard = openSet.Dequeue();
 
 				if (currentBoard.ValidateSolution())
 					solutions.Add(currentBoard);

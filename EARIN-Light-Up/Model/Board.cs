@@ -889,6 +889,8 @@ namespace EARIN_Light_Up
 			return null;
 		}
 
+		public 
+
 		private SimplePriorityQueue<int> RunHeuristics()
 		{
 			var successors = new SimplePriorityQueue<int>();
@@ -911,9 +913,35 @@ namespace EARIN_Light_Up
 
 			return successors;
 		}
+
+
 		// TODO: Implement GetHashCode
 		// https://blogs.msdn.microsoft.com/ericlippert/2011/02/28/guidelines-and-rules-for-gethashcode/
 		// https://stackoverflow.com/questions/371328/why-is-it-important-to-override-gethashcode-when-equals-method-is-overridden
 
+		public List<uint> GetBulbsLayerList()
+		{
+			var list = new List<uint>();
+			for (uint rowCounter = 0; rowCounter < size; ++rowCounter)
+			{
+				for (uint columnCounter = 0; columnCounter < size; ++columnCounter)
+				{
+					if(_board[rowCounter, columnCounter].Type == FieldType.Bulb)
+						list.Add(_board[rowCounter, columnCounter].Id);
+				}
+			}
+
+			return list;
+		}
+
+		public void PutBulbsLayer(IEnumerable<uint> list)
+		{
+			foreach (var bulb in list)
+			{
+				PutBulb(bulb);
+			}
+
+			this.CurrentProfit = this.GetProfit();
+		}
 	}
 }
