@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Numerics;
+using System.Threading.Tasks;
 using Console = Colorful.Console;
 
 namespace EARIN_Light_Up.Algorithm
@@ -19,19 +20,17 @@ namespace EARIN_Light_Up.Algorithm
 		    this.Board = new Board(board);
 			this._numberOfFields = board.size * board.size;
 	    }
-        public void Perform()
+        public async void Perform()
         {
-			Console.WriteLine();
-	        Console.WriteLine();
-	        Console.WriteLine();
+			Console.WriteLine("\tStarted DFS-based solver.");
 
 	        Search(0);
+			Console.WriteLine("DFS solution: ", Color.IndianRed);
 	        foreach (var solution in solutions)
 	        {
-		        Console.WriteLine("Visits:" + solution.Visits, Color.Green);
+		        Console.WriteLine("Visits:" + solution.Visits, Color.IndianRed);
                 solution.Draw();
 	        }
-	        Console.WriteLine("DFS traversed whole tree.", Color.Aqua);
 	        Console.WriteLine();
         }
 
@@ -54,7 +53,6 @@ namespace EARIN_Light_Up.Algorithm
 			        Visits += 1;
 					Search(1+counter);
 					Board.RemoveBulb(counter);
-			        Visits += 1;
 				}
 	        }
 		}

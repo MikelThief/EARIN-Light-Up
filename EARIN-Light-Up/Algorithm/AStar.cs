@@ -9,6 +9,7 @@ using Priority_Queue;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Console = Colorful.Console;
 
 namespace EARIN_Light_Up.Algorithm
 {
@@ -48,11 +49,12 @@ namespace EARIN_Light_Up.Algorithm
 
 		}
 
-		public void Perform()
+		public async void Perform()
 		{
+			Console.WriteLine("\tStarted A*-based solver.");
 			// add root as a first element (frontier)
 			//openSet.Enqueue(Board, Board.CurrentProfit);
-			
+
 			openSetexp.Enqueue(PlainBoard.GetBulbsLayer(), 0);
 
 			while (openSetexp.Count > 0)
@@ -91,7 +93,8 @@ namespace EARIN_Light_Up.Algorithm
 
 			foreach (var board in solutions)
 			{
-				Console.WriteLine("Visits:" + board.Visits, Color.Green);
+				Console.WriteLine("A* solution: ", Color.Orchid);
+				Console.WriteLine("Visits:" + board.Visits, Color.Orchid);
 				board.Draw();
             }
 		}

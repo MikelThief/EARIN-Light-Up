@@ -161,8 +161,6 @@ namespace EARIN_Light_Up
 			}
 
 			CalculateFieldPriorities();
-
-			Console.WriteLine("Board loaded.", Color.Aqua);
 		}
 
 		private void CalculateFieldPriorities()
