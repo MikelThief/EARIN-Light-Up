@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,8 +19,22 @@ namespace EARIN_Light_Up
 			Console.WriteLine();
 
 			Console.WriteLine("Starting session:");
-            var board = new Board("testboard22.txt");
-			Console.WriteLine("\t Board loaded successfully.");
+
+			Console.WriteLine("Provide a path to the board file: ");
+	        var path = Console.ReadLine();
+
+
+	        if (!File.Exists(path))
+	        {
+				Console.WriteLine("Provided path does not lead to any file. Exiting.", Color.Red);
+		        Console.ReadKey();
+		        return;
+	        }
+
+			var board = new Board(path);
+			Console.WriteLine("====================================");
+			Console.WriteLine();
+			Console.WriteLine("\tBoard loaded successfully.");
 			Console.WriteLine();
 
 	        var DFSbox = new DFS(board);
