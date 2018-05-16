@@ -293,18 +293,9 @@ namespace EARIN_Light_Up
 
 				}
 
-			if (_board[rowCounter, columnCounter].Type == FieldType.Empty)
-			{
-				_board[rowCounter, columnCounter].priorityPair =
-					new Tuple<int?, int?>(digitFieldsAroundCounter, sumOfdigitFieldsAround);
-				//_board[rowCounter, columnCounter].Profit =
-				//	(byte)(digitFieldsAroundCounter * sumOfdigitFieldsAround);
-			}
-			else
-			{
-				_board[rowCounter, columnCounter].priorityPair = new Tuple<int?, int?>(null, null);
-				//_board[rowCounter, columnCounter].Profit = -1;
-			}
+			
+			_board[rowCounter, columnCounter].priorityPair = _board[rowCounter, columnCounter].Type == FieldType.Empty ?
+			new Tuple<int?, int?>(digitFieldsAroundCounter, sumOfdigitFieldsAround) : new Tuple<int?, int?>(null, null);
 		}
 
 		private void SaveBoard()
@@ -400,7 +391,6 @@ namespace EARIN_Light_Up
 				if (_board[rowCounter, bulbColumn].Type == FieldType.Empty)
 				{
 					_board[rowCounter, bulbColumn].Type = FieldType.Lit;
-				//	_board[rowCounter, bulbColumn].priorityPair = new Tuple<int?, int?>(0,0);
                 }
 				else if (_board[rowCounter, bulbColumn].Type == FieldType.Lit)
 					_board[rowCounter, bulbColumn].Type = FieldType.StrongLit;
@@ -413,7 +403,6 @@ namespace EARIN_Light_Up
 				if (_board[rowCounter, bulbColumn].Type == FieldType.Empty)
 				{
 					_board[rowCounter, bulbColumn].Type = FieldType.Lit;
-				//	_board[rowCounter, bulbColumn].priorityPair = new Tuple<int?, int?>(null, null);
 				}
                 else if (_board[rowCounter, bulbColumn].Type == FieldType.Lit)
 					_board[rowCounter, bulbColumn].Type = FieldType.StrongLit;
@@ -426,7 +415,6 @@ namespace EARIN_Light_Up
 				if (_board[bulbRow, columnCounter].Type == FieldType.Empty)
 				{
 					_board[bulbRow, columnCounter].Type = FieldType.Lit;
-				//	_board[bulbRow, columnCounter].priorityPair = new Tuple<int?, int?>(null, null);
                 }
 				else if (_board[bulbRow, columnCounter].Type == FieldType.Lit)
 					_board[bulbRow, columnCounter].Type = FieldType.StrongLit;
@@ -439,7 +427,6 @@ namespace EARIN_Light_Up
 				if (_board[bulbRow, columnCounter].Type == FieldType.Empty)
 				{
 					_board[bulbRow, columnCounter].Type = FieldType.Lit;
-				//	_board[bulbRow, columnCounter].priorityPair = new Tuple<int?, int?>(null, null);
 				}
                 else if (_board[bulbRow, columnCounter].Type == FieldType.Lit)
 					_board[bulbRow, columnCounter].Type = FieldType.StrongLit;
@@ -801,19 +788,6 @@ namespace EARIN_Light_Up
 
 			return profit;
 		}
-
-		public Field GetField(uint fieldID)
-		{
-			for (uint rowCounter = 0; rowCounter < size; rowCounter++)
-			{
-				for (uint columnCounter = 0; columnCounter < size; columnCounter++)
-				{
-					return _board[rowCounter, columnCounter];
-				}
-			}
-
-			throw new Exception("FieldID is outside board's index!");
-		}
 		public Field GetField(uint row, uint column)
 		{
 			if(row < size || column < size)
@@ -915,11 +889,6 @@ namespace EARIN_Light_Up
 
 			return successors;
 		}
-
-
-		// TODO: Implement GetHashCode
-		// https://blogs.msdn.microsoft.com/ericlippert/2011/02/28/guidelines-and-rules-for-gethashcode/
-		// https://stackoverflow.com/questions/371328/why-is-it-important-to-override-gethashcode-when-equals-method-is-overridden
 
 		public List<int> GetBulbsLayer()
 		{

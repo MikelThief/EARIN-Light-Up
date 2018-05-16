@@ -26,18 +26,8 @@ namespace EARIN_Light_Up.Algorithm
 		private SimplePriorityQueue<List<int>> openSetexp;
 		private List<List<int>> closedSetexp;
 
-		// goal node does not exist - it is computed on the fly	= ValidateSolution()
-		// h() - estimated distance to the goal = CurrentProfit in Board. Should approach 0 for a success
-
 		public AStar(Board board)
 		{
-			//int capacity = default;
-			//for (uint counter = 0; counter < Board.size * Board.size; counter++)
-			//{
-			//	if (Board.GetField(counter).Type == FieldType.Empty)
-			//		capacity += 1;
-
-			//}
 			this.solutions = new List<Board>();
 			this.Board = new Board(board);
 			this.PlainBoard = new Board(board);
@@ -52,22 +42,16 @@ namespace EARIN_Light_Up.Algorithm
 		public async void Perform()
 		{
 			Console.WriteLine("\tStarted A*-based solver.");
-			// add root as a first element (frontier)
-			//openSet.Enqueue(Board, Board.CurrentProfit);
 
+			// add root as a first element (frontier)
 			openSetexp.Enqueue(PlainBoard.GetBulbsLayer(), 0);
 
 			while (openSetexp.Count > 0)
 			{
 				var currentBulbLayer = openSetexp.Dequeue();
 
-				if (closedSetexp.Contains(currentBulbLayer))
-					continue;
-
 				var currentBoard = new Board(PlainBoard);
 				currentBoard.PutBulbsLayer(currentBulbLayer);
-                //Board currentBoard = openSet.Dequeue();
-
 
                 if (currentBoard.ValidateSolution())
 				{
@@ -76,8 +60,6 @@ namespace EARIN_Light_Up.Algorithm
 					break;
 				}
 
-
-				closedSetexp.Add(currentBulbLayer);
 				Visits += 1;
 				var successors = currentBoard.GetSuccessors();
 
@@ -86,7 +68,6 @@ namespace EARIN_Light_Up.Algorithm
                     var successorBoard = new Board(PlainBoard);
                     successorBoard.PutBulbsLayer(successorBulbLayer);
 
-	                //openSetexp.Enqueue(successorBulbLayer, (successorBoard.GetProfit()));
 					openSetexp.Enqueue(successorBulbLayer, (float) (successorBoard.GetProfit() + 0.01 * successorBoard.GetNumberOfLitFields()));
 				}
             }
